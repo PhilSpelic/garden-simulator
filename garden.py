@@ -4,6 +4,7 @@ from datetime import datetime
 WATER_MAX = 1
 GROWTH_WATER_NEEDED = 1
 RIPE_DAYS_FROM_SEED = 3
+RIPE_DAYS_FROM_SEED_POTATOE = 2
 
 
 def create_garden(rows, cols):
@@ -74,12 +75,17 @@ def advance_day(garden):
 
     for row in garden:
         for cell in row:
-            if cell["state"] == "seed" and cell["water"] >= GROWTH_WATER_NEEDED:
-                cell["days_as_seed"] += 1
+            if cell["crop"] == "potatoe":
+                    if cell["state"] == "seed" and cell["water"] >= GROWTH_WATER_NEEDED:
+                        cell["days_as_seed"] += 1
+                    if cell["days_as_seed"] >= RIPE_DAYS_FROM_SEED_POTATOE:
+                        cell["state"] = "ripe"
+            else:
+                if cell["state"] == "seed" and cell["water"] >= GROWTH_WATER_NEEDED:
+                    cell["days_as_seed"] += 1
                 if cell["days_as_seed"] >= RIPE_DAYS_FROM_SEED:
                     cell["state"] = "ripe"
             cell["water"] -= 1
-
     return True
 
 
@@ -113,5 +119,7 @@ def create_tomato_harvest_file():
     line = f"harvested 1 tomato {current_datetime}\n"
     with target_file.open("a", encoding="utf-8") as file:
         file.write(line)
+    
+    print("Created file 'tomato.txt' at", current_datetime)
 
     ### Aufgabe 3 Ende
